@@ -1,10 +1,6 @@
 <template>
     <div class="app">
-        <div class="bg-orbs">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
-            <div class="orb orb-3"></div>
-        </div>
+        <OrbBackground />
 
         <div class="container">
             <div class="card">
@@ -20,6 +16,7 @@
                             type="text"
                             placeholder="Имя пользователя"
                             class="input"
+                            autocomplete="username"
                             required
                         />
                     </div>
@@ -29,6 +26,7 @@
                             type="password"
                             placeholder="Пароль"
                             class="input"
+                            autocomplete="new-password"
                             required
                         />
                     </div>
@@ -38,6 +36,7 @@
                             type="password"
                             placeholder="Повторите пароль"
                             class="input"
+                            autocomplete="new-password"
                             required
                         />
                     </div>
@@ -52,10 +51,12 @@
 
                 <p class="footer-text">
                     Уже есть аккаунт?
-                    <a href="/login" class="link">Войти</a>
+                    <router-link to="/login" class="link">Войти</router-link>
                 </p>
             </div>
         </div>
+
+        <SiteFooter />
     </div>
 </template>
 
@@ -63,6 +64,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { register } from "../api/auth.js";
+import OrbBackground from "../components/OrbBackground.vue";
+import SiteFooter from "../components/SiteFooter.vue";
 
 const username = ref("");
 const password = ref("");
@@ -97,93 +100,76 @@ const handleRegister = async () => {
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600&family=Onest:wght@300;400;500&display=swap");
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 .app {
     min-height: 100vh;
-    background: #0a0a0f;
+    background:
+        radial-gradient(
+            ellipse at top,
+            rgba(45, 108, 255, 0.08) 0%,
+            transparent 60%
+        ),
+        radial-gradient(
+            ellipse at bottom,
+            rgba(34, 227, 154, 0.06) 0%,
+            transparent 60%
+        ),
+        #05070d;
     font-family: "Onest", sans-serif;
     color: #e8e6f0;
     position: relative;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.bg-orbs {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-}
-
-.orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.35;
-    animation: drift 12s ease-in-out infinite;
-}
-
-.orb-1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #7c3aed, transparent 70%);
-    top: -100px;
-    left: -100px;
-    animation-delay: 0s;
-}
-
-.orb-2 {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #db2777, transparent 70%);
-    top: 30%;
-    right: -80px;
-    animation-delay: -4s;
-}
-
-.orb-3 {
-    width: 350px;
-    height: 350px;
-    background: radial-gradient(circle, #0ea5e9, transparent 70%);
-    bottom: -50px;
-    left: 30%;
-    animation-delay: -8s;
-}
-
-@keyframes drift {
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-    33% {
-        transform: translate(30px, -20px) scale(1.05);
-    }
-    66% {
-        transform: translate(-20px, 30px) scale(0.95);
-    }
+    flex-direction: column;
 }
 
 .container {
     position: relative;
     z-index: 1;
+    flex: 1;
     width: 100%;
     max-width: 420px;
+    margin: 0 auto;
     padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.04);
+    width: 100%;
+    background: linear-gradient(
+        145deg,
+        rgba(24, 32, 56, 0.55) 0%,
+        rgba(12, 20, 34, 0.55) 100%
+    );
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     padding: 40px 36px;
     backdrop-filter: blur(20px);
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
     animation: fadeUp 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: 24px;
+    background: linear-gradient(
+        135deg,
+        rgba(45, 108, 255, 0.6),
+        rgba(34, 227, 154, 0.6)
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 @keyframes fadeUp {
@@ -206,7 +192,7 @@ const handleRegister = async () => {
     font-family: "Unbounded", sans-serif;
     font-size: 36px;
     font-weight: 600;
-    background: linear-gradient(135deg, #c084fc, #f472b6, #60a5fa);
+    background: linear-gradient(135deg, #2d6cff, #1ea7ff, #22e39a);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -233,7 +219,7 @@ const handleRegister = async () => {
 
 .input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(5, 10, 20, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 14px;
     padding: 14px 18px;
@@ -249,9 +235,9 @@ const handleRegister = async () => {
 }
 
 .input:focus {
-    border-color: rgba(192, 132, 252, 0.4);
-    background: rgba(255, 255, 255, 0.07);
-    box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.1);
+    border-color: rgba(34, 227, 154, 0.5);
+    background: rgba(5, 10, 20, 0.8);
+    box-shadow: 0 0 0 3px rgba(34, 227, 154, 0.15);
 }
 
 .error {
@@ -266,33 +252,39 @@ const handleRegister = async () => {
 
 .success-msg {
     font-size: 13px;
-    color: #4ade80;
+    color: #22e39a;
     text-align: center;
     padding: 8px 12px;
-    background: rgba(74, 222, 128, 0.1);
-    border: 1px solid rgba(74, 222, 128, 0.2);
+    background: rgba(34, 227, 154, 0.1);
+    border: 1px solid rgba(34, 227, 154, 0.25);
     border-radius: 10px;
 }
 
 .btn-submit {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, #7c3aed, #db2777);
+    background: linear-gradient(90deg, #2d6cff 0%, #22e39a 100%);
+    background-size: 200% 100%;
+    background-position: 0% 50%;
     border: none;
     border-radius: 14px;
-    color: white;
+    color: #051018;
     font-family: "Onest", sans-serif;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition:
+        background-position 0.4s ease,
+        box-shadow 0.2s ease,
+        transform 0.05s ease;
     margin-top: 4px;
-    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+    box-shadow: 0 10px 30px -12px rgba(34, 227, 154, 0.5);
     letter-spacing: 0.3px;
 }
 
 .btn-submit:hover {
-    box-shadow: 0 6px 28px rgba(124, 58, 237, 0.6);
+    background-position: 100% 50%;
+    box-shadow: 0 14px 34px -12px rgba(34, 227, 154, 0.7);
     transform: translateY(-1px);
 }
 
@@ -308,12 +300,12 @@ const handleRegister = async () => {
 }
 
 .link {
-    color: #c084fc;
+    color: #22e39a;
     text-decoration: none;
     transition: color 0.2s;
 }
 
 .link:hover {
-    color: #f472b6;
+    color: #55f0b3;
 }
 </style>
